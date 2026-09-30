@@ -1,13 +1,22 @@
 class Solution {
 public:
     vector<int> twoSum(vector<int>& nums, int target) {
-        unordered_map<int, int> map;
-        for (int i = 0, n = nums.size(); i < n; ++i) {
-            if (auto it = map.find(target - nums[i]); it != map.end())
-                return {i, it->second};
-            else
-                map[nums[i]] = i;
+        unordered_map<int, int> numMap;
+        int n = nums.size();
+
+        // Build the hash table
+        for (int i = 0; i < n; i++) {
+            numMap[nums[i]] = i;
         }
-        return {-1, -1};
+
+        // Find the complement
+        for (int i = 0; i < n; i++) {
+            int complement = target - nums[i];
+            if (numMap.count(complement) && numMap[complement] != i) {
+                return {i, numMap[complement]};
+            }
+        }
+
+        return {}; // No solution found
     }
 };
