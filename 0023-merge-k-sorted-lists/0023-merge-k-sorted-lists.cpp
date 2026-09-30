@@ -1,42 +1,48 @@
 class Solution {
 public:
     ListNode* mergeKLists(vector<ListNode*>& lists) {
-        if (lists.empty()) {
+        if (lists.empty())
             return nullptr;
-        }
-        return mergeKListsHelper(lists, 0, lists.size() - 1);
+        return mergeSub(lists, 0, lists.size() - 1);
     }
-    
-    ListNode* mergeKListsHelper(vector<ListNode*>& lists, int start, int end) {
-        if (start == end) {
-            return lists[start];
-        }
-        if (start + 1 == end) {
-            return merge(lists[start], lists[end]);
-        }
-        int mid = start + (end - start) / 2;
-        ListNode* left = mergeKListsHelper(lists, start, mid);
-        ListNode* right = mergeKListsHelper(lists, mid + 1, end);
-        return merge(left, right);
+
+private:
+    static ListNode* mergeSub(const vector<ListNode*>& lists, int left,
+                              int right) {
+        if (left == right)
+            return lists[left];
+        if (left + 1 == right)
+            return merge(lists[left], lists[right]);
+        int mid = left + (right - left) / 2;
+        return merge(mergeSub(lists, left, mid),
+                     mergeSub(lists, mid + 1, right));
     }
-    
-    ListNode* merge(ListNode* l1, ListNode* l2) {
-        ListNode* dummy = new ListNode(0);
-        ListNode* curr = dummy;
-        
-        while (l1 && l2) {
-            if (l1->val < l2->val) {
-                curr->next = l1;
-                l1 = l1->next;
+
+    static ListNode* merge(ListNode* a, ListNode* b) {
+        if (a == nullptr)
+            return b;
+        if (b == nullptr)
+            return a;
+        ListNode* head;
+        if (a->val <= b->val) {
+            head = a;
+            a = a->next;
+        } else {
+            head = b;
+            b = b->next;
+        }
+        ListNode* curr = head;
+        while (a && b) {
+            if (a->val <= b->val) {
+                curr->next = a;
+                a = a->next;
             } else {
-                curr->next = l2;
-                l2 = l2->next;
+                curr->next = b;
+                b = b->next;
             }
             curr = curr->next;
         }
-        
-        curr->next = l1 ? l1 : l2;
-        
-        return dummy->next;
+        curr->next = a ? a : b;
+        return head;
     }
 };
