@@ -1,24 +1,34 @@
 class Solution {
-public:
-    vector<string> generateParenthesis(int n) {
-        vector<string> res;
-        dfs(0, 0, "", n, res);
-        return res;        
-    }
-
 private:
-    void dfs(int openP, int closeP, string s, int n, vector<string>& res) {
-        if (openP == closeP && openP + closeP == n * 2) {
-            res.push_back(s);
+    void generate(int open, int close, int n, vector<string>& ans, string& curr) {
+
+        if(curr.size() == 2 * n) {
+            ans.push_back(curr);
             return;
         }
 
-        if (openP < n) {
-            dfs(openP + 1, closeP, s + "(", n, res);
+        
+        if(open < n) {
+            curr += '(';
+            generate(open + 1, close, n, ans, curr);
+            curr.pop_back();
         }
 
-        if (closeP < openP) {
-            dfs(openP, closeP + 1, s + ")", n, res);
+        
+        if(close < open) {
+            curr += ')';
+            generate(open, close + 1, n, ans, curr);
+            curr.pop_back();
         }
+    }
+
+public:
+    vector<string> generateParenthesis(int n) {
+        vector<string> ans;
+        string curr;
+
+        generate(0, 0, n, ans, curr);
+
+        return ans;
     }
 };
