@@ -1,33 +1,34 @@
-class Solution {
+ class Solution {
 public:
     string convert(string s, int numRows) {
-        vector<string> rows(numRows);
-        int currentrow = 0;
-        bool goingDown = true;
-        string result = "";
 
-        if (numRows == 1) {
+        if (numRows == 1 || numRows >= s.size())
             return s;
-        }
-        
-        for(int i = 0; i < s.length(); i++) {
-            rows[currentrow] += s[i];
 
-            if(currentrow == numRows - 1) {
-                goingDown = false;
-            } else if(currentrow == 0) {
-                goingDown = true;
-            } 
+        vector<string> rows(numRows);
 
-            if(goingDown == true) {
-                currentrow++;
-            } else {
-                currentrow--;
-            }
+        int row = 0;
+        int direction = 1;
+
+        for (char c : s) {
+
+            rows[row] += c;
+
+            if (row == 0)
+                direction = 1;
+
+            if (row == numRows - 1)
+                direction = -1;
+
+            row += direction;
         }
-        for (int i =0; i < rows.size(); i++) {
-            result += rows[i];
+
+        string ans = "";
+
+        for (int i = 0; i < numRows; i++) {
+            ans += rows[i];
         }
-        return result;
+
+        return ans;
     }
 };
