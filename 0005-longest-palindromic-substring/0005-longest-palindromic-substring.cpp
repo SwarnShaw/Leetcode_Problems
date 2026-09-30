@@ -1,38 +1,38 @@
 class Solution {
 public:
-    std::string longestPalindrome(std::string s) {
-        if (s.length() <= 1) {
-            return s;
+    int min_p1 = 0;
+    int max_p2 = 0;
+    int d = 0;                       // d = length of best palindrome so far
+
+    void help(const string& s, int p1, int p2){
+        if(p1 < 0 or p2 == s.size())
+            return;
+        if(s[p1] == s[p2]){
+            if(p2 - p1 + 1 > d){
+                d = p2 - p1 + 1;
+                min_p1 = p1;
+                max_p2 = p2;
+            }
+            help(s, p1 - 1, p2 + 1);
         }
-        
-        int maxLen = 1;
-        std::string maxStr = s.substr(0, 1);
-        s = "#" + std::regex_replace(s, std::regex(""), "#") + "#";
-        std::vector<int> dp(s.length(), 0);
-        int center = 0;
-        int right = 0;
-        
-        for (int i = 0; i < s.length(); ++i) {
-            if (i < right) {
-                dp[i] = std::min(right - i, dp[2 * center - i]);
+    }
+
+    string longestPalindrome(string s) {
+        int i = 0;
+        while(i < s.size()){
+            int p1 = i - 1;
+            while(i + 1 < s.size() && s[i] == s[i+1]){
+                i++;
             }
-            
-            while (i - dp[i] - 1 >= 0 && i + dp[i] + 1 < s.length() && s[i - dp[i] - 1] == s[i + dp[i] + 1]) {
-                dp[i]++;
+            int p2 = i + 1;
+            if(p2 - p1 - 1 > d){     // the run of equal chars is itself a palindrome
+                d = p2 - p1 - 1;
+                min_p1 = p1 + 1;
+                max_p2 = p2 - 1;
             }
-            
-            if (i + dp[i] > right) {
-                center = i;
-                right = i + dp[i];
-            }
-            
-            if (dp[i] > maxLen) {
-                maxLen = dp[i];
-                maxStr = s.substr(i - dp[i], 2 * dp[i] + 1);
-                maxStr.erase(std::remove(maxStr.begin(), maxStr.end(), '#'), maxStr.end());
-            }
+            help(s, p1, p2);
+            i++;
         }
-        
-        return maxStr;
+        return s.substr(min_p1, max_p2 - min_p1 + 1);
     }
 };
