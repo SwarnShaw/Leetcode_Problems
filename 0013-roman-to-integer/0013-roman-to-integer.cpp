@@ -1,25 +1,79 @@
 class Solution {
 public:
     int romanToInt(string s) {
-        int res = 0;
-        unordered_map<char, int> roman = {
-            {'I', 1},
-            {'V', 5},
-            {'X', 10}, 
-            {'L', 50},
-            {'C', 100},
-            {'D', 500},
-            {'M', 1000}
-        };
-
-        for (int i = 0; i < s.size() - 1; i++) {
-            if (roman[s[i]] < roman[s[i + 1]]) {
-                res -= roman[s[i]];
-            } else {
-                res += roman[s[i]];
+        int number = 0;
+        for(int i = 0; i < s.length(); i++) {
+            switch(s[i]) {
+                case 'M': {
+                    number += 1000;
+                    break;
+                }
+                case 'D': {
+                    number += 500;
+                    break;
+                }
+                case 'C': {
+                    if (i + 1 < s.length()) {
+                        if (s[i+1]=='M') {
+                            number += 900;
+                            i++;
+                            break;
+                        }
+                        if (s[i+1] == 'D') {
+                            number += 400;
+                            i++;
+                            break;
+                        }
+                    }
+                    number+=100;
+                    break;
+                }
+                case 'L': {
+                    number += 50;
+                    break;
+                }
+                case 'X': {
+                    if (i + 1 < s.length()) {
+                        if (s[i+1] == 'L') {
+                            number += 40;
+                            i++;
+                            break;
+                        }
+                        if (s[i+1] == 'C') {
+                            number += 90;
+                            i++;
+                            break;
+                        }
+                        number += 10;
+                        break;
+                    }
+                    number += 10;
+                    break;
+                }
+                case 'V': {
+                    number += 5;
+                    break;
+                }
+                case 'I': {
+                    if (i + 1 < s.length()) {
+                        if (s[i + 1] == 'X') {
+                            number += 9;
+                            i++;
+                            break;
+                        }
+                        if (s[i + 1] == 'V') {
+                            number += 4;
+                            i++;
+                            break;
+                        }
+                        number += 1;
+                        break;
+                    }
+                    number += 1;
+                    break;
+                }
             }
         }
-
-        return res + roman[s[s.size() - 1]];        
+        return number;
     }
 };
